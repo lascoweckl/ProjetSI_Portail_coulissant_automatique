@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QCM d'entraînement n°2 — Projet SI</title>
+<style>
+*{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#eef3f8;color:#1f2937;line-height:1.4}
+header{background:linear-gradient(135deg,#173b66,#2d6fa3);color:#fff;padding:24px 30px}
+header small{text-transform:uppercase;letter-spacing:.08em} header h1{margin:5px 0 0}
+main{max-width:950px;margin:22px auto;padding:0 18px 40px}
+.card{background:#fff;border-radius:13px;padding:18px 20px;margin-bottom:14px;box-shadow:0 2px 9px #0001}
+.intro{border-left:5px solid #2d6fa3} .qtitle{font-weight:700;color:#173b66;font-size:17px;margin-bottom:12px}
+.option{display:block;width:100%;text-align:left;margin:7px 0;padding:11px 13px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;cursor:pointer;font-size:15px}
+.option:hover:not(:disabled){background:#edf5fc;border-color:#2d6fa3}
+.option:disabled{cursor:default;color:#1f2937}
+.correct{background:#e8f7ee!important;border:2px solid #26834f!important}
+.wrong{background:#fdecec!important;border:2px solid #bd3b3b!important}
+.feedback{display:none;margin-top:12px;padding:10px 12px;border-radius:8px}
+.good{display:block;background:#e8f7ee;border-left:5px solid #26834f}
+.bad{display:block;background:#fff1f1;border-left:5px solid #bd3b3b}
+#scorebox{position:sticky;top:0;z-index:5;background:#173b66;color:#fff;padding:10px 16px;border-radius:0 0 10px 10px;display:flex;justify-content:space-between;gap:10px}
+button.action{background:#173b66;color:#fff;border:0;border-radius:8px;padding:10px 14px;cursor:pointer}
+.final{display:none;text-align:center;font-size:20px}
+@media print{#scorebox,.action{display:none!important} body{background:#fff} .card{box-shadow:none;break-inside:avoid}}
+</style></head><body>
+<header><small>Projet SI — Portail coulissant</small><h1>QCM d'entraînement n°2</h1></header>
+<main>
+<div id="scorebox"><span>Progression : <strong id="progress">0 / 20</strong></span><span>Score : <strong id="score">0 / 20</strong></span></div>
+<section class="card intro"><strong>Mode entraînement individuel.</strong> Choisis une réponse pour chaque question. 
+La réponse est vérifiée immédiatement. En cas d'erreur, <strong>la bonne réponse est affichée</strong> avec une explication. Une seule tentative par question.</section>
+<div id="quiz"></div>
+<section id="final" class="card final"></section>
+<button class="action" onclick="resetQuiz()">↻ Recommencer le QCM</button>
+</main>
+<!-- Navigation entre les activités -->
+<nav aria-label="Navigation entre les activités" style="text-align: center; padding: 16px;">
+  <a href="S1-3-QCM_1_portail_SI_entrainement_interactif.html">RETOUR</a> |
+  <a href="index.html">SOMMAIRE</a> |
+  <a href="S1-4 creation progressive du soft du portail.html">SUIVANT</a>
+</nav>
+
+<script>
+const questions=[{"q": "À quoi sert principalement la prise USB de l’Arduino Uno dans le cours ?", "opts": ["À alimenter directement le moteur 775", "À programmer la carte et éventuellement l’alimenter depuis le PC", "À connecter la crémaillère", "À recevoir le faisceau infrarouge"], "ans": "B", "expl": "La liaison USB sert à la programmation et peut alimenter la carte en 5 V depuis l’ordinateur."}, {"q": "Quelles broches de l’Arduino Uno sont utilisées pour les interruptions externes indiquées dans le cours ?", "opts": ["2 et 3", "0 et 1", "A4 et A5", "9 et 10"], "ans": "A", "expl": "Les broches numériques 2 et 3 peuvent être utilisées comme entrées d’interruptions externes."}, {"q": "Sur la liaison série de l’Arduino Uno, quelle association est correcte ?", "opts": ["0 = TX et 1 = RX", "A4 = RX et A5 = TX", "0 = RX et 1 = TX", "2 = RX et 3 = TX"], "ans": "C", "expl": "Le cours indique 0 = RX (réception) et 1 = TX (transmission)."}, {"q": "Quelle tension constitue la référence électrique du montage ?", "opts": ["12 V", "5 V", "3,3 V", "GND / 0 V"], "ans": "D", "expl": "GND est la masse électrique et constitue la référence 0 V."}, {"q": "Dans le projet, le bouton poussoir est considéré comme :", "opts": ["Une entrée numérique", "Une sortie PWM", "Une alimentation", "Un actionneur mécanique de puissance"], "ans": "A", "expl": "L’Arduino lit l’état du bouton sur une entrée numérique."}, {"q": "Que doit faire le portail si le faisceau IR est interrompu pendant la fermeture ?", "opts": ["Accélérer la fermeture", "Permettre au programme d’interrompre la fermeture", "Éteindre définitivement l’Arduino", "Inverser automatiquement la polarité de l’alimentation générale"], "ans": "B", "expl": "L’interruption du faisceau informe l’Arduino afin que le programme puisse interrompre la fermeture."}, {"q": "Quelle caractéristique est associée au récepteur infrarouge étudié ?", "opts": ["Émission à 940 kHz", "Alimentation obligatoire en 12 V", "Démodulation à 38 kHz", "Sortie mécanique à crémaillère"], "ans": "C", "expl": "Le module récepteur comporte une démodulation infrarouge à 38 kHz."}, {"q": "Quelle chaîne décrit correctement la transmission mécanique après le moteur 775 ?", "opts": ["Moteur → bouton → DEL", "Moteur → Arduino → batterie", "Moteur → capteur IR → pignon", "Moteur → réducteur → pignon-crémaillère"], "ans": "D", "expl": "La rotation du moteur passe par le réducteur puis par le système pignon-crémaillère."}, {"q": "Quel est le rôle essentiel d’un pont en H ?", "opts": ["Inverser le sens du courant dans le moteur", "Mesurer une tension analogique", "Limiter le courant d’une DEL", "Créer une liaison USB"], "ans": "A", "expl": "Le pont en H permet d’inverser le sens du courant dans le moteur pour inverser sa rotation."}, {"q": "Dans l’architecture étudiée, qui fournit la puissance au moteur ?", "opts": ["La broche numérique 13", "Le Motor Shield", "Le bouton poussoir", "La prise ICSP"], "ans": "B", "expl": "L’Arduino fournit les ordres ; le Motor Shield assure l’interface de puissance."}, {"q": "Que réalise l’instruction « digitalWrite(8, HIGH); » si la broche 8 est configurée en sortie ?", "opts": ["Elle lit la broche 8", "Elle attend 8 ms", "Elle impose l’état logique haut sur la broche 8", "Elle configure la broche 8 en entrée"], "ans": "C", "expl": "digitalWrite() impose HIGH ou LOW à une sortie numérique."}, {"q": "Quel est le rôle de la fonction loop() ?", "opts": ["Configurer uniquement les broches analogiques", "Être exécutée une seule fois", "Déclarer les variables globales", "Répéter en permanence le programme principal"], "ans": "D", "expl": "loop() est répétée tant que la carte Arduino est alimentée."}, {"q": "Dans une structure if / else, quand le bloc « else » est-il exécuté ?", "opts": ["Lorsque la condition du if est fausse", "Toujours après le if", "Uniquement au démarrage", "Lorsque la boucle for se termine"], "ans": "A", "expl": "else correspond au cas où la condition testée par if est fausse."}, {"q": "Combien de fois s’exécute le corps de « for (int i=0; i<5; i++) » ?", "opts": ["4 fois", "5 fois", "6 fois", "Une infinité de fois"], "ans": "B", "expl": "i prend successivement les valeurs 0, 1, 2, 3 et 4 : cinq itérations."}, {"q": "Quelle durée correspond à « delay(3000); » ?", "opts": ["3000 secondes", "30 secondes", "3 secondes", "0,3 seconde"], "ans": "C", "expl": "delay() utilise des millisecondes : 3000 ms = 3 s."}, {"q": "Quelle est la principale limite de delay() pour le portail complet ?", "opts": ["Il inverse le moteur", "Il efface les variables", "Il transforme les entrées en sorties", "Il bloque temporairement le programme et gêne la surveillance des événements"], "ans": "D", "expl": "Pendant delay(), le microcontrôleur reste bloqué et ne surveille pas normalement les autres événements."}, {"q": "Que signifie « appeler une fonction » ?", "opts": ["Demander au programme d’exécuter les instructions de cette fonction", "Écrire pour la première fois le contenu de la fonction", "Transformer la fonction en variable", "Déclarer obligatoirement un paramètre"], "ans": "A", "expl": "L’appel déclenche l’exécution des instructions contenues dans une fonction déjà définie."}, {"q": "À quoi sert l’instruction return dans une fonction qui renvoie une valeur ?", "opts": ["À répéter la fonction", "À renvoyer le résultat au programme appelant", "À configurer une broche", "À arrêter définitivement l’Arduino"], "ans": "B", "expl": "return transmet au programme appelant la valeur produite par la fonction."}, {"q": "Quel prototype correspond à une fonction avec un paramètre et une valeur de retour ?", "opts": ["void arreterMoteur()", "void allumerDEL(int broche)", "bool obstacleDetecte(int broche)", "bool portailOuvert()"], "ans": "C", "expl": "Cette fonction reçoit le paramètre int broche et renvoie une valeur booléenne."}, {"q": "Dans la progression proposée, quelle étape vient juste avant l’assemblage et le test du programme complet ?", "opts": ["Faire clignoter une DEL", "Lire le bouton poussoir", "Créer les fonctions moteur", "Prendre en compte la barrière IR pendant la fermeture"], "ans": "D", "expl": "Le niveau 11 traite la sécurité par barrière IR ; le niveau 12 réalise l’intégration complète."}];
+let score=0, done=0;
+function render(){
+ const root=document.getElementById('quiz'); root.innerHTML='';
+ questions.forEach((x,i)=>{
+  const sec=document.createElement('section'); sec.className='card';
+  sec.innerHTML=`<div class="qtitle">Q${i+1}. ${x.q}</div><div class="options"></div><div class="feedback" id="f${i}"></div>`;
+  const box=sec.querySelector('.options');
+  x.opts.forEach((o,j)=>{
+   const letter=String.fromCharCode(65+j), b=document.createElement('button');
+   b.className='option'; b.innerHTML=`<strong>${letter}.</strong> ${o}`;
+   b.onclick=()=>answer(i,j,sec); box.appendChild(b);
+  });
+  root.appendChild(sec);
+ });
+}
+function answer(i,j,sec){
+ const x=questions[i], buttons=[...sec.querySelectorAll('.option')];
+ if(buttons[0].disabled) return;
+ buttons.forEach(b=>b.disabled=true);
+ const chosen=String.fromCharCode(65+j), goodIndex=x.ans.charCodeAt(0)-65;
+ const f=sec.querySelector('.feedback');
+ if(chosen===x.ans){
+   score++; buttons[j].classList.add('correct');
+   f.className='feedback good'; f.innerHTML=`<strong>✓ Bonne réponse.</strong><br>${x.expl}`;
+ } else {
+   buttons[j].classList.add('wrong'); buttons[goodIndex].classList.add('correct');
+   f.className='feedback bad';
+   f.innerHTML=`<strong>✗ Réponse incorrecte.</strong><br>La bonne réponse est <strong>${x.ans} — ${x.opts[goodIndex]}</strong>.<br>${x.expl}`;
+ }
+ done++; document.getElementById('progress').textContent=`${done} / 20`;
+ document.getElementById('score').textContent=`${score} / 20`;
+ if(done===20){
+   const fin=document.getElementById('final'); fin.style.display='block';
+   fin.innerHTML=`QCM terminé — <strong>${score} / 20</strong><br><small>Tu peux revoir les corrections ci-dessus ou recommencer le QCM.</small>`;
+ }
+}
+function resetQuiz(){score=0;done=0;document.getElementById('progress').textContent='0 / 20';document.getElementById('score').textContent='0 / 20';document.getElementById('final').style.display='none';render();window.scrollTo(0,0)}
+render();
+</script></body></html>

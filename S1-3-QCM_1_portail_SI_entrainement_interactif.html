@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QCM d'entraînement n°1 — Projet SI</title>
+<style>
+*{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#eef3f8;color:#1f2937;line-height:1.4}
+header{background:linear-gradient(135deg,#173b66,#2d6fa3);color:#fff;padding:24px 30px}
+header small{text-transform:uppercase;letter-spacing:.08em} header h1{margin:5px 0 0}
+main{max-width:950px;margin:22px auto;padding:0 18px 40px}
+.card{background:#fff;border-radius:13px;padding:18px 20px;margin-bottom:14px;box-shadow:0 2px 9px #0001}
+.intro{border-left:5px solid #2d6fa3} .qtitle{font-weight:700;color:#173b66;font-size:17px;margin-bottom:12px}
+.option{display:block;width:100%;text-align:left;margin:7px 0;padding:11px 13px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;cursor:pointer;font-size:15px}
+.option:hover:not(:disabled){background:#edf5fc;border-color:#2d6fa3}
+.option:disabled{cursor:default;color:#1f2937}
+.correct{background:#e8f7ee!important;border:2px solid #26834f!important}
+.wrong{background:#fdecec!important;border:2px solid #bd3b3b!important}
+.feedback{display:none;margin-top:12px;padding:10px 12px;border-radius:8px}
+.good{display:block;background:#e8f7ee;border-left:5px solid #26834f}
+.bad{display:block;background:#fff1f1;border-left:5px solid #bd3b3b}
+#scorebox{position:sticky;top:0;z-index:5;background:#173b66;color:#fff;padding:10px 16px;border-radius:0 0 10px 10px;display:flex;justify-content:space-between;gap:10px}
+button.action{background:#173b66;color:#fff;border:0;border-radius:8px;padding:10px 14px;cursor:pointer}
+.final{display:none;text-align:center;font-size:20px}
+@media print{#scorebox,.action{display:none!important} body{background:#fff} .card{box-shadow:none;break-inside:avoid}}
+</style></head><body>
+<header><small>Projet SI — Portail coulissant</small><h1>QCM d'entraînement n°1</h1></header>
+<main>
+<div id="scorebox"><span>Progression : <strong id="progress">0 / 20</strong></span><span>Score : <strong id="score">0 / 20</strong></span></div>
+<section class="card intro"><strong>Mode entraînement individuel.</strong> Choisis une réponse pour chaque question. 
+La réponse est vérifiée immédiatement. En cas d'erreur, <strong>la bonne réponse est affichée</strong> avec une explication. Une seule tentative par question.</section>
+<div id="quiz"></div>
+<section id="final" class="card final"></section>
+<button class="action" onclick="resetQuiz()">↻ Recommencer le QCM</button>
+</main>
+<!-- Navigation entre les activités -->
+<nav aria-label="Navigation entre les activités" style="text-align: center; padding: 16px;">
+  <a href="S1-3-portail_coulissant_SI_cours_electronique_programmation_v2.html">RETOUR</a> |
+  <a href="index.html">SOMMAIRE</a> |
+  <a href="S1-3-QCM_2_portail_SI_entrainement_interactif.html">SUIVANT</a>
+</nav>
+
+<script>
+const questions=[{"q": "Combien l’Arduino Uno possède-t-il d’entrées/sorties numériques ?", "opts": ["6", "14", "12", "20"], "ans": "B", "expl": "L’Arduino Uno dispose de 14 entrées/sorties numériques, numérotées de 0 à 13."}, {"q": "Quelles broches numériques de l’Arduino Uno peuvent produire un signal PWM ?", "opts": ["3, 5, 6, 9, 10 et 11", "0, 1, 2, 3, 4 et 5", "A0 à A5", "2, 4, 7, 8, 12 et 13"], "ans": "A", "expl": "Les broches PWM indiquées dans le cours sont 3, 5, 6, 9, 10 et 11."}, {"q": "Sur l’Arduino Uno, quelle broche correspond au signal SDA du bus I²C ?", "opts": ["A5", "0", "A4", "13"], "ans": "C", "expl": "A4 correspond à SDA et A5 à SCL."}, {"q": "Quelle est la plage d’alimentation externe classiquement recommandée pour l’Arduino Uno via Jack/Vin ?", "opts": ["3,3 à 5 V", "5 à 6 V", "12 à 24 V", "7 à 12 V"], "ans": "D", "expl": "Le cours indique une plage classiquement recommandée de 7 à 12 V."}, {"q": "Dans le code des couleurs d’une résistance à quatre anneaux, que représente le troisième anneau ?", "opts": ["La tolérance", "Le multiplicateur", "Le premier chiffre", "La puissance maximale"], "ans": "B", "expl": "Les deux premiers anneaux donnent les chiffres, le troisième le multiplicateur et le quatrième la tolérance."}, {"q": "Quelle valeur correspond à une résistance marron – noir – rouge – or ?", "opts": ["1 kΩ ± 5 %", "10 kΩ ± 10 %", "100 Ω ± 5 %", "1 MΩ ± 5 %"], "ans": "A", "expl": "Marron = 1, noir = 0, rouge = ×100 : 10 × 100 = 1000 Ω, avec or = ±5 %."}, {"q": "Sur une DEL classique, quel repère permet généralement d’identifier la cathode ?", "opts": ["La patte la plus longue uniquement", "Une bague rouge", "La patte la plus courte et le méplat", "Le côté arrondi sans méplat"], "ans": "C", "expl": "La cathode est généralement repérée par la patte courte et le méplat du boîtier."}, {"q": "Pourquoi utilise-t-on une résistance avec une DEL classique ?", "opts": ["Pour inverser sa polarité", "Pour augmenter sa tension d’alimentation", "Pour la faire clignoter automatiquement", "Pour limiter le courant qui la traverse"], "ans": "D", "expl": "La résistance limite le courant et protège la DEL contre un courant excessif."}, {"q": "Quel est le rôle du module émetteur de la barrière infrarouge ?", "opts": ["Émettre le faisceau infrarouge", "Mesurer la vitesse du moteur", "Commander le Motor Shield", "Recevoir un signal à 38 kHz"], "ans": "A", "expl": "L’émetteur produit le rayonnement infrarouge qui traverse la zone à surveiller."}, {"q": "Quelle longueur d’onde est indiquée dans le cours pour la LED de l’émetteur infrarouge ?", "opts": ["38 nm", "940 nm", "5 µm", "12 nm"], "ans": "B", "expl": "Le module émetteur utilise une LED infrarouge de 940 nm."}, {"q": "Quel est le rôle mécanique du moteur 775 dans le portail ?", "opts": ["Détecter un obstacle", "Convertir une rotation en tension électrique", "Produire la rotation nécessaire au déplacement", "Réduire directement la vitesse par logiciel"], "ans": "C", "expl": "Le moteur transforme l’énergie électrique en énergie mécanique de rotation."}, {"q": "Comment inverse-t-on le sens de rotation d’un moteur à courant continu ?", "opts": ["En augmentant uniquement sa tension", "En ajoutant une résistance en série", "En coupant le fil de masse", "En inversant la polarité à ses bornes"], "ans": "D", "expl": "L’inversion de la polarité inverse le sens du courant et donc le sens de rotation."}, {"q": "Quel circuit du Motor Shield assure la fonction de double pont en H ?", "opts": ["L298", "ATmega328", "NE555", "CD4511"], "ans": "A", "expl": "Le Motor Shield étudié est basé sur le L298, qui comporte deux ponts en H."}, {"q": "Pourquoi le moteur 775 ne doit-il pas être branché directement sur une sortie Arduino ?", "opts": ["Parce qu’il fonctionne uniquement en alternatif", "Parce que son courant est trop important pour une sortie Arduino", "Parce qu’il utilise obligatoirement le bus I²C", "Parce que l’Arduino ne possède aucune sortie numérique"], "ans": "B", "expl": "Le moteur demande un courant nettement supérieur à ce qu’une broche Arduino peut fournir."}, {"q": "Quelle fonction Arduino est exécutée une seule fois au démarrage ?", "opts": ["loop()", "digitalWrite()", "setup()", "delay()"], "ans": "C", "expl": "setup() est exécutée une seule fois lors du démarrage ou d’un reset."}, {"q": "Quelle instruction configure la broche 8 en sortie ?", "opts": ["digitalWrite(8, OUTPUT);", "digitalRead(8);", "pinMode(OUTPUT, 8);", "pinMode(8, OUTPUT);"], "ans": "D", "expl": "La syntaxe correcte est pinMode(numéro_de_broche, mode)."}, {"q": "Quelle instruction permet de lire l’état logique de la broche 2 ?", "opts": ["digitalRead(2)", "digitalWrite(2, HIGH)", "pinMode(2, INPUT)", "delay(2)"], "ans": "A", "expl": "digitalRead() retourne l’état logique d’une entrée numérique."}, {"q": "Dans « for (int i = 0; i < 5; i++) », quel est le rôle de « i++ » ?", "opts": ["Arrêter immédiatement la boucle", "Augmenter i de 1 à chaque tour", "Remettre i à zéro", "Tester si i vaut 5"], "ans": "B", "expl": "i++ est l’incrémentation : la variable i augmente de 1 après chaque itération."}, {"q": "Que signifie « void » devant le nom d’une fonction ?", "opts": ["La fonction possède obligatoirement un paramètre", "La fonction est exécutée une seule fois", "La fonction ne renvoie aucune valeur", "La fonction renvoie true ou false"], "ans": "C", "expl": "void indique qu’aucune valeur n’est renvoyée par la fonction."}, {"q": "Dans « bool obstacleDetecte(int broche) », que représente « int broche » ?", "opts": ["Une valeur retournée", "Le nom de la fonction", "Une constante globale", "Un paramètre reçu par la fonction"], "ans": "D", "expl": "int broche déclare un paramètre entier transmis à la fonction lors de son appel."}];
+let score=0, done=0;
+function render(){
+ const root=document.getElementById('quiz'); root.innerHTML='';
+ questions.forEach((x,i)=>{
+  const sec=document.createElement('section'); sec.className='card';
+  sec.innerHTML=`<div class="qtitle">Q${i+1}. ${x.q}</div><div class="options"></div><div class="feedback" id="f${i}"></div>`;
+  const box=sec.querySelector('.options');
+  x.opts.forEach((o,j)=>{
+   const letter=String.fromCharCode(65+j), b=document.createElement('button');
+   b.className='option'; b.innerHTML=`<strong>${letter}.</strong> ${o}`;
+   b.onclick=()=>answer(i,j,sec); box.appendChild(b);
+  });
+  root.appendChild(sec);
+ });
+}
+function answer(i,j,sec){
+ const x=questions[i], buttons=[...sec.querySelectorAll('.option')];
+ if(buttons[0].disabled) return;
+ buttons.forEach(b=>b.disabled=true);
+ const chosen=String.fromCharCode(65+j), goodIndex=x.ans.charCodeAt(0)-65;
+ const f=sec.querySelector('.feedback');
+ if(chosen===x.ans){
+   score++; buttons[j].classList.add('correct');
+   f.className='feedback good'; f.innerHTML=`<strong>✓ Bonne réponse.</strong><br>${x.expl}`;
+ } else {
+   buttons[j].classList.add('wrong'); buttons[goodIndex].classList.add('correct');
+   f.className='feedback bad';
+   f.innerHTML=`<strong>✗ Réponse incorrecte.</strong><br>La bonne réponse est <strong>${x.ans} — ${x.opts[goodIndex]}</strong>.<br>${x.expl}`;
+ }
+ done++; document.getElementById('progress').textContent=`${done} / 20`;
+ document.getElementById('score').textContent=`${score} / 20`;
+ if(done===20){
+   const fin=document.getElementById('final'); fin.style.display='block';
+   fin.innerHTML=`QCM terminé — <strong>${score} / 20</strong><br><small>Tu peux revoir les corrections ci-dessus ou recommencer le QCM.</small>`;
+ }
+}
+function resetQuiz(){score=0;done=0;document.getElementById('progress').textContent='0 / 20';document.getElementById('score').textContent='0 / 20';document.getElementById('final').style.display='none';render();window.scrollTo(0,0)}
+render();
+</script></body></html>
